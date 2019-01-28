@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "cargomailparser",
+                "projectName": "cargomailparser",
+                "workingDirectory": "/home/iqbal/masterthesis/maven/cargomailparser",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "cargomailparser",
+                "projectName": "cargomailparser",
+                "workingDirectory": "/home/iqbal/masterthesis/maven/cargomailparser",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}
