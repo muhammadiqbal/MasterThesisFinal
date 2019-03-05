@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>IE tool evaluator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css}" />
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <table class="table .table-bordered ">
+                <thead class="thead-dark">
+                    <th scope="col">Email</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Commision</th>
+                    <th scope="col">L-port</th>
+                    <th scope="col">D-port</th>
+                    <th scope="col">Laycan-f</th>
+                    <th scope="col">Laycan-l</th>
+                    <th scope="col">L-rate</th>
+                    <th scope="col">Load-type</th>
+                    <th scope="col">D-rate</th>
+                    <th scope="col">Disch-type</th>
+                    <th scope="col">SF</th>
+                    <th scope="col">Precision</th>
+                    <th scope="col">Recall</th>
+                    <th scope="col">Eval TimeStamp</th>
+                    <th scope="col">Parsing time</th>
+                    <th scope="col">Delete</th>
+                </thead>
+                <tbody>
+                    <tr th:each="evaluation, iter:${evaluations}">
+                        <td scope="row"><a th:href="@{'/email/email/' + ${evaluation.getEmail()}}">[[${evaluation.getEmail()}]]</a></td>
+                        <td th:text="${evaluation.isDescription()}"></td>
+                        <td th:text="${evaluation.isQuantity()}"></td>
+                        <td th:text="${evaluation.isCommision()}"></td>
+                        <td th:text="${evaluation.isLoading_port()}"></td>
+                        <td th:text="${evaluation.isDischarging_port()}"></td>
+                        <td th:text="${evaluation.isLaycan_first()}"></td>
+                        <td th:text="${evaluation.isLaycan_last()}"></td>
+                        <td th:text="${evaluation.isLoading_rate()}"></td>
+                        <td th:text="${evaluation.isDischarging_rate()}"></td>
+                        <td th:text="${evaluation.isLoading_rate_type()}"></td>
+                        <td th:text="${evaluation.isDischarging_rate_type()}"></td>
+                        <td th:text="${evaluation.isStowage_factor()}"></td>
+                        <td th:text="${evaluation.getPrecisions()}"></td>
+                        <td th:text="${evaluation.getRecall()}"></td>
+                        <td th:text="${evaluation.getCreateDateTime()}"></td>
+                        <td th:text="${evaluation.getEmail()}"></td>
+                        <td>
+                            <form action="#" th:method="delete" th:action="@{'/evaluate/delete/'+ ${evaluation.getId()}}">
+                                <input type="submit" value="Delete">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

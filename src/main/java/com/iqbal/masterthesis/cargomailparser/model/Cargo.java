@@ -1,24 +1,28 @@
 package com.iqbal.masterthesis.cargomailparser.model;
 
 import java.util.Date;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.iqbal.masterthesis.cargomailparser.languagemodel.*;
-
+import java.io.Serializable;
 
 @Entity
 @Table
-public class Cargo extends BaseModel{
+//@JsonIgnoreProperties(value = { "intValue" })
+public class Cargo extends BaseModel implements Serializable{
     
     public Cargo(){
         this.modelType = "Cargo";
     }
 
-    public Cargo(Commision commision, Quantity quantity, LDRate ldRate, PortDestination port, LaycanDate laycanDate){
+    public Cargo(Commision commision, Quantity quantity, LDRate ldRate, PortDestination port, LaycanDate laycanDate) {
         this.modelType = "Cargo";
         this.commision = commision.getNominal();
-        this.quantity  = quantity.getNominal();
+        this.quantity = quantity.getNominal();
         this.laycan_first = laycanDate.getLaycanFirstDay();
         this.laycan_last = laycanDate.getLaycanLastDay();
         this.loading_port = port.getPortFrom();
@@ -30,7 +34,9 @@ public class Cargo extends BaseModel{
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     private String description;
     private float quantity;
     private float commision;
@@ -43,7 +49,33 @@ public class Cargo extends BaseModel{
     private String loading_rate_type;
     private String discharging_rate_type;
     private float stowage_factor;
+    private Long parsingTime;
 
+    // @Nullable
+    // @OneToOne(fetch = FetchType.EAGER)
+    // private Evaluation evaluation;
+
+    /**
+     * @return the parsingTime
+     */
+    public Long getParsingTime() {
+        return parsingTime;
+    }
+
+    /**
+     * @param parsingTime the parsingTime to set
+     */
+    public void setParsingTime(Long parsingTime) {
+        this.parsingTime = parsingTime;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+    
     /**
      * @return the commision
      */

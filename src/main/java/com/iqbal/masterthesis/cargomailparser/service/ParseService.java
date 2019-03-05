@@ -1,61 +1,41 @@
 package com.iqbal.masterthesis.cargomailparser.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import com.iqbal.masterthesis.cargomailparser.*;
 import com.iqbal.masterthesis.cargomailparser.helper.Preprocessor;
 import com.iqbal.masterthesis.cargomailparser.visitor.*;
 import com.iqbal.masterthesis.cargomailparser.visitor.CommisionVisitor;
-import com.iqbal.masterthesis.cargomailparser.visitor.DescriptionVisitor;
 import com.iqbal.masterthesis.cargomailparser.visitor.LDRateVisitor;
 import com.iqbal.masterthesis.cargomailparser.visitor.LaycanDateVisitor;
 import com.iqbal.masterthesis.cargomailparser.visitor.QuantityVisitor;
 import com.iqbal.masterthesis.cargomailparser.visitor.StowageFactorVisitor;
 import com.iqbal.masterthesis.cargomailparser.languagemodel.*;
-import com.iqbal.masterthesis.cargomailparser.model.BaseModel;
 import com.iqbal.masterthesis.cargomailparser.model.Cargo;
+import com.iqbal.masterthesis.cargomailparser.repositories.CargoRepository;
+import com.iqbal.masterthesis.cargomailparser.repositories.EmailRepository;
+import com.iqbal.masterthesis.cargomailparser.helper.CaseChangingCharStream;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * ParseService
  */
 public class ParseService {
-    
-    public static Cargo parseEmail(String email) throws IOException {
-        List<String> lines = Preprocessor.textIntoSentences(email);
-        Cargo cargo = new Cargo();
-        for (String line : lines) {
-            String textClass = PythonRunnerService.runClassifier(line); 
-            if (textClass!= null) {
-                switch (textClass) {
-                    case "LD rate":
-                        cargo.setLDRate(parseLDrate(line));
-                    case "Quantity":
-                        cargo.setQuantity(parseQuantity(line).getNominal());
-                    case "Laycan Date":
-                        cargo.setLaycanDate(parseLaycanDate(line));
-                    case "Port":
-                        cargo.setPortDestination(parsePortDestination(line));
-                    case "Commision":
-                        cargo.setCommision(parseCommision(line).getNominal());
-                    case "Stowage Factor":
-                        cargo.setStowage_factor(parseStowageFactor(line).getNominal());
-                    default:
-                        break;
-                }
-            }
-        }       
-        
-        return cargo;
-    }
+
+    @Autowired
+    CargoRepository cargoRepo;
+
+    @Autowired 
+    EmailRepository emailRepo;
 
     public static Cargo parseEmailNoClassifiation(String email) throws IOException {
         List<String> lines = Preprocessor.textIntoSentences(email);
         Cargo cargo = new Cargo();
+
         for (String line : lines) {
             // the second codition is used to disambiguate the quantity and ld rate
             // with an assumption, quntity is always defined first
@@ -69,6 +49,7 @@ public class ParseService {
             if(parsePortDestination(line) != null){
                 cargo.setPortDestination(parsePortDestination(line));
             }
+
             if(parseCommision(line) != null){
                 cargo.setCommision(parseCommision(line).getNominal());
             }
@@ -77,7 +58,14 @@ public class ParseService {
             }
             if(parseStowageFactor(line) != null)
                 cargo.setStowage_factor(parseStowageFactor(line).getNominal());
-        }       
+        }
+        if (cargo.getLoading_port() == null && cargo.getDescription() != null) {
+            cargo.setLoading_port(findLoadPortInDesc(cargo.getDescription()));
+        }
+
+        if (cargo.getDischarging_port() == null && cargo.getDescription() != null) {
+            cargo.setDischarging_port(findDischPortInDesc(cargo.getDescription()));
+        }
         return cargo;
     }
     
@@ -124,12 +112,35 @@ public class ParseService {
 
     public static PortDestination parsePortDestination(String inputStream) {
         CharStream input = CharStreams.fromString(inputStream);
-        PortDestinationLexer portDestinationLexer = new PortDestinationLexer(input);
+        CaseChangingCharStream inputUpper = new CaseChangingCharStream(input, true);
+        PortDestinationLexer portDestinationLexer = new PortDestinationLexer(inputUpper);
         CommonTokenStream commonTokenStream = new CommonTokenStream(portDestinationLexer);
         PortDestinationParser portDestinationParser = new PortDestinationParser(commonTokenStream);
         PortVisitor portVisitor = new PortVisitor();
         PortDestination portDestination = portVisitor.visitPort_destination(portDestinationParser.port_destination());
+        System.out.println(inputUpper);
+        System.out.println(portDestination);
         return portDestination;
+    }
+
+    public static PortDestination parseLoadPort(String inputStream, PortDestination portDestination) {
+        CharStream input = CharStreams.fromString(inputStream);
+        PortDestinationLexer portDestinationLexer = new PortDestinationLexer(input);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(portDestinationLexer);
+        PortDestinationParser portDestinationParser = new PortDestinationParser(commonTokenStream);
+        PortVisitor portVisitor = new PortVisitor();
+        portDestination = portVisitor.visitLoading_port(portDestinationParser.loading_port());
+        return portDestination;
+    }
+
+    public static PortDestination parseDischargingPort(String inputStream, PortDestination portDestination) {
+        CharStream input = CharStreams.fromString(inputStream);
+        PortDestinationLexer portDestinationLexer = new PortDestinationLexer(input);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(portDestinationLexer);
+        PortDestinationParser portDestinationParser = new PortDestinationParser(commonTokenStream);
+        PortVisitor portVisitor = new PortVisitor();
+        PortDestination dischargingPort = portVisitor.visitDischarging_port(portDestinationParser.discharging_port());
+        return dischargingPort;
     }
 
     public static LaycanDate parseLaycanDate(String inputStream) {
@@ -142,44 +153,23 @@ public class ParseService {
         return laycanDate;
     }
 
-    // public static List<Commision> parseCommisions(String inputStream) {
-    //     CharStream input = CharStreams.fromString(inputStream);
-    //     CommisionLexer lexer = new CommisionLexer(input);
-    //     CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-    //     CommisionParser commisionParser = new CommisionParser(commonTokenStream);
-    //     CommisionVisitor commisionVisitor = new CommisionVisitor();
-    //     List<Commision> commisions = commisionVisitor.visitCommisions(commisionParser.commision());
-    //     return commisions;
-    // }
+    private static String findLoadPortInDesc(String description){
+        String loadPort = null;
+        int endIndex = description.indexOf("->");
+        if(endIndex > 0)
+            loadPort = description.substring(0,endIndex);
+        return loadPort;
+    }
 
-        // public static List<Description> parseDescriptions(String inputStream) {
-    //     CharStream input = CharStreams.fromString(inputStream);
-    //     DescriptionLexer lexer3 = new DescriptionLexer(input);
-    //     CommonTokenStream commonTokenStream3 = new CommonTokenStream(lexer3);
-    //     DescriptionParser descriptionParser = new DescriptionParser(commonTokenStream3);
-    //     DescriptionVisitor descriptionVisitor = new DescriptionVisitor();
-    //     List<Description> descriptions = descriptionVisitor.visitDescriptions(descriptionParser.description());
-    //     return descriptions;
-    // }
-
-    // public static Description parseDescription(String inputStream) {
-    //     CharStream input = CharStreams.fromString(inputStream);
-    //     QuantityLexer lexer = new QuantityLexer(input);
-    //     CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-    //     QuantityParser quantityParser = new QuantityParser(commonTokenStream);
-    //     QuantityVisitor quantityVisitor = new QuantityVisitor();
-    //     Description description = quantityVisitor.visitDescription(quantityParser.quantity());
-    //     return description;
-    // }
-
-    // public static List<Quantity> parseQuantities(String inputStream) {
-    //     CharStream input = CharStreams.fromString(inputStream);
-    //     QuantityLexer lexer = new QuantityLexer(input);
-    //     CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-    //     QuantityParser quantityParser = new QuantityParser(commonTokenStream);
-    //     QuantityVisitor quantityVisitor = new QuantityVisitor();
-    //     List<Quantity> quantities = quantityVisitor.visitQuantities(quantityParser.quantity());
-    //     return quantities;
-    // }
-
+    private static String findDischPortInDesc(String description){
+        String loadPort = null;
+        int beginIndex = description.indexOf("->");
+        if(beginIndex >0)
+            description = description.substring(beginIndex + 3, description.length()-1);
+        System.out.println(description);
+        int endIndex = description.indexOf("-");
+        if(endIndex > 0 && beginIndex >0)
+            loadPort = description.substring(0,endIndex);
+        return loadPort;
+    }
 }

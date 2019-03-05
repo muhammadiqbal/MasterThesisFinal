@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico" />
+
+    <title>IE tool [Cargo]</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css}" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="">modelType</label>
+                        <input type="text" class="form-control" th:value="${cargo.getModelType()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">description</label>
+                        <input type="text" class="form-control" th:value="${cargo.getDescription()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">quantity</label>
+                        <input type="text" class="form-control" th:value="${cargo.getQuantity()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">commision</label>
+                        <input type="text" class="form-control" th:value="${cargo.getCommision()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">loading_port</label>
+                        <input type="text" class="form-control" th:value="${cargo.getLoading_port()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">discharging_port</label>
+                        <input type="text" class="form-control" th:value="${cargo.getDischarging_port()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">laycan_first</label>
+                        <input type="text" class="form-control" th:value="${cargo.getLaycan_first()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">laycan_last</label>
+                        <input type="text" class="form-control" th:value="${cargo.getLaycan_last()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">loading_rate</label>
+                        <input type="text" class="form-control" th:value="${cargo.getLoading_rate()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">discharging_rate</label>
+                        <input type="text" class="form-control" th:value="${cargo.getDischarging_rate()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">loading_rate_type</label>
+                        <input type="text" class="form-control" th:value="${cargo.getLoading_rate_type()}">
+                    </div>
+                    <div class="form-group">
+
+                        <label for="">discharging_rate_type</label>
+                        <input type="text" class="form-control" th:value="${cargo.getDischarging_rate_type()}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">stowage_factor</label>
+                        <input type="text" class="form-control" th:value="${cargo.getStowage_factor()}">
+                    </div>
+
+            </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

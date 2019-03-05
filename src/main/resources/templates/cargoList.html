@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>IE tool evaluator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css}" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <p><b>Cargo #= [[${cargoNumber}]]</b></p>
+        </div>
+        <div class="row">
+            <table class="table .table-bordered ">
+                <thead class="thead-dark">
+                    <!-- <th scope="col">Email</th> -->
+                    <th scope="col">Description</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Commision</th>
+                    <th scope="col">L-port</th>
+                    <th scope="col">D-port</th>
+                    <th scope="col">Laycan-f</th>
+                    <th scope="col">Laycan-l</th>
+                    <th scope="col">L-rate</th>
+                    <th scope="col">Load-type</th>
+                    <th scope="col">D-rate</th>
+                    <th scope="col">Disch-type</th>
+                    <th scope="col">SF</th>
+                    <th scope="col">Parsing time</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    <tr th:each="cargo, stat:${cargos}">
+                        <!-- <td th:text="{cargo.email}" scope="row"></td> -->
+                        <td th:text="${cargo.description}"></td>
+                        <td th:text="${cargo.quantity}"></td>
+                        <td th:text="${cargo.commision}"></td>
+                        <td th:text="${cargo.loading_port}"></td>
+                        <td th:text="${cargo.discharging_port}"></td>
+                        <td th:text="${cargo.laycan_first}"></td>
+                        <td th:text="${cargo.laycan_last}"></td>
+                        <td th:text="${cargo.loading_rate}"></td>
+                        <td th:text="${cargo.discharging_rate}"></td>
+                        <td th:text="${cargo.loading_rate_type}"></td>
+                        <td th:text="${cargo.discharging_rate_type}"></td>
+                        <td th:text="${cargo.stowage_factor}"></td>
+                        <td th:text="${cargo.getParsingTime()}"></td>
+                        <td>
+                            <form action="#" th:method="delete" th:action="@{'/cargo/delete/'+ ${cargo.getId()}}">
+                                <input type="submit" value="Delete">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

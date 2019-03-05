@@ -59,23 +59,18 @@ fragment LETTER            : [a-zA-Z\u0080-\u00FF_] ;
 //  */
 
 WS                      : (' ' | '\t')+ {skip();};
-
-/*
- * Loading rate laycan date
- */
-DATE_MONTH      : (('0')? DIGIT) | '11' | '12' 
-                  |J A N U? A? R? Y? 
-                  |F E B R? U? A? R? Y?
-                  |M A R C? H?   
-                  |A P R I? L?   
-                  |M A Y     
-                  |J U N E?    
-                  |J U L Y?    
-                  |A U G U? S? T?  
-                  |S E P T? E? M? B? E? R? 
-                  |O C T O? B? E? R? 
-                  |N O V E? M? B? E? R?
-                  |D E C E? M? B? E? R?;
+DATE_MONTH      : J A N (U A R Y)?   
+                  |F E B (R U A R Y)? 
+                  |M A R (C H)?   
+                  |A P R (I L)?   
+                  |M A Y                        
+                  |J U N E? 
+                  |J U L Y? 
+                  |A U G (U S T)?   
+                  |S E P (T E M B E R)?                 
+                  |O C T (O B E R)? 
+                  |N O V (E M B E R)? 
+                  |D E C (E M B E R)? ;
 FIRST_DAY        : ('0'|'1'|'2' DIGIT) |('3' ('0'|'1')) ;
 LAST_DAY        : ('0'|'1'|'2' DIGIT) |('3' ('0'|'1')) ;
 DATE_YEAR       : DIGIT DIGIT DIGIT DIGIT;

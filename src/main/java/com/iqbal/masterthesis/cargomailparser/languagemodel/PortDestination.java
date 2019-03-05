@@ -9,6 +9,8 @@ public class PortDestination extends BaseModel{
     private String portFrom;
     private String portTo;
 
+    public PortDestination() {
+    }
     public PortDestination(String portFrom, String portTo) {
         this.portFrom = portFrom;
         this.portTo = portTo;

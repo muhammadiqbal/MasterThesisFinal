@@ -2,7 +2,7 @@ grammar StowageFactor;
 /*
  * Parser rules
  */
-stowage_factor      : .*? (STOWAGE_FACTOR_IDENTIFIER STOWAGE_FACTOR_ABOUT? STOWAGE_FACTOR_NOMINAL STOWAGE_FACTOR_UNIT?);
+stowage_factor      : .* (STOWAGE_FACTOR_IDENTIFIER? STOWAGE_FACTOR_ABOUT? (STOWAGE_FACTOR_NOMINAL STOWAGE_FACTOR_UNIT));
 
 /*
  * Fragment

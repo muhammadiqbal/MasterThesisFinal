@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css}" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <table class="table .table-bordered ">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Body</th>
+                        <th>Cargo</th>
+
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="email, stat:${emails}">
+                        <td><a th:href="@{'/email/email/'+ ${email.getId()}}">[[${email.getId()}]]</a></td>
+                        <td th:text="${#strings.substring(email.body,0,99)}"></td>
+                        <td><a th:if="@{email.getCargo().size()>0}" th:href="@{'/cargo/cargo/' + ${email.getCargo().get(0).getId()}}">[[${email.getCargo().get(0).getId()}]]</a></td>
+                        
+                        <td>
+                            <form action="#" th:method="delete" th:action="@{'/email/delete/'+ ${email.getId()}}">
+                                <input type="submit" value="Delete">
+                            </form>
+                            <a th:href="@{'/evaluate/evaluation/'+ ${email.getId()}}">Evaluate</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -17,6 +17,11 @@ public class Quantity extends BaseModel{
             this.nominal = nominal/1000;
         }
         else{
+            // check wheter the quantity detected is in form of digit folowed by K
+            // or a range e.g 10/11000 (in this case 10 will be detected)
+            // then reformat 
+            if(nominal/100 == 0)
+                nominal *= 1000;
             this.nominal = nominal;
         }
     }

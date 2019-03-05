@@ -20,7 +20,7 @@ public class LaycanDateVisitor extends LaycanDateBaseVisitor<LaycanDate> {
     public LaycanDate visitLaycan(LaycanContext ctx) {
         Date laycanFirstDay = null;
         Date laycanLastDay = null;
-        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateParser = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int year  = localDate.getYear();
@@ -28,23 +28,22 @@ public class LaycanDateVisitor extends LaycanDateBaseVisitor<LaycanDate> {
             if (ctx.DATE_YEAR() != null) {
                 try {
                     
-                    laycanFirstDay = parser.parse(ctx.FIRST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/"
+                    laycanFirstDay = dateParser.parse(ctx.FIRST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/"
                             + ctx.DATE_YEAR().getText());
                     System.out.println(laycanFirstDay);
                     System.out.println(ctx.FIRST_DAY().getText());
                     System.out.println(ctx.DATE_MONTH().getText());
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
+                   
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    laycanFirstDay = parser.parse(ctx.FIRST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/" + year);
+                    laycanFirstDay = dateParser.parse(ctx.FIRST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/" + year);
                     System.out.println(laycanFirstDay);
                     System.out.println(ctx.FIRST_DAY().getText());
                     System.out.println(ctx.DATE_MONTH().getText());
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -52,28 +51,29 @@ public class LaycanDateVisitor extends LaycanDateBaseVisitor<LaycanDate> {
         if (ctx.LAST_DAY() != null && ctx.DATE_MONTH() != null) {
             if (ctx.DATE_YEAR()!= null) {
                 try {
-                    laycanLastDay = parser.parse(ctx.LAST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/"
+                    laycanLastDay = dateParser.parse(ctx.LAST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/"
                             + ctx.DATE_YEAR().getText());
                     System.out.println(laycanLastDay);
                     System.out.println(ctx.LAST_DAY().getText());
                     System.out.println(ctx.DATE_MONTH().getText());
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }else{
                 try {
-                    laycanFirstDay = parser.parse(ctx.LAST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/" + year);
+                    laycanFirstDay = dateParser.parse(ctx.LAST_DAY().getText() + "/" + ctx.DATE_MONTH().getText() + "/" + year);
                     System.out.println(laycanLastDay);
                     System.out.println(ctx.LAST_DAY().getText());
                     System.out.println(ctx.DATE_MONTH().getText());
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
+                     
                     e.printStackTrace();
                 }
             }
             
         }
+        System.out.println(laycanFirstDay);
+        System.out.println(laycanLastDay);
         return new LaycanDate(laycanFirstDay, laycanLastDay);
     }
 }
